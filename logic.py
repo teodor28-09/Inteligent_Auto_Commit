@@ -16,9 +16,9 @@ class AutoCommit:
     def is_modified(self):
         res = self.git(["status"]).stdout
         if "modified" in res:
-            return True #este modificat
+            return True
         else :
-            return False #nu este modificat
+            return False
 
     def auto_commit(self):
         if self.is_modified() == True:
@@ -29,8 +29,3 @@ class AutoCommit:
         else:
             print("Up to date")
 
-
-repos = "/home/teodor/Git_Test"
-git = AutoCommit(repos)
-
-git.auto_commit()
