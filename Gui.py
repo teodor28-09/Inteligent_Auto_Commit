@@ -1,12 +1,20 @@
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog,messagebox
 from tkinter import Tk
 import tkinter as tk
 from logic import AutoCommit
 
-
+repo_path = None
 def on_git_select():
-    filepath = filedialog.askdirectory()
-    print(filepath)
+    repo_path = filedialog.askdirectory()
+    print(repo_path)
+    if repo_path:
+        lbl_path.config(text=repo_path)
+
+def on_start():
+    if not repo_path:
+        messagebox.showerror("Error", "No folder selected")
+    git = AutoCommit(repo_path)
+    git.auto_commit()
 
 if __name__ == '__main__':
 
@@ -22,6 +30,13 @@ if __name__ == '__main__':
 
     btn_get = tk.Button(frm, text="Select Git Folder",command = on_git_select)
     btn_get.pack(side=tk.LEFT, padx=4)
+
+    btn_start = tk.Button(frm, text="Start Tracking", command=on_start)
+    btn_start.pack(side=tk.LEFT, padx=4)
+
+    lbl_path = tk.Label(root, text="No folder selected", wraplength=550, fg="gray")
+    lbl_path.pack(pady=10)
+
 
 
     root.mainloop()
