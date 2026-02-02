@@ -35,5 +35,6 @@ class AutoCommit:
             return False
 
 
+
 def notify(title, message):
     subprocess.run(["notify-send", title, message])

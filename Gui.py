@@ -51,6 +51,16 @@ def on_button_toggle():
         btn_start.config(text="Start Tracking")
         lbl_status.config(text="Status: Stopped", fg="red")
 
+def on_commit():
+    if not repo_path:
+        return
+
+    git = AutoCommit(repo_path)
+    committed = git.auto_commit()
+
+    if committed:
+        notify("Git Manual Commit", "Changes committed successfully")
+
 if __name__ == '__main__':
 
     root = Tk()
@@ -68,6 +78,9 @@ if __name__ == '__main__':
 
     btn_start = tk.Button(frm, text="Start Tracking", command=on_button_toggle)
     btn_start.pack(side=tk.LEFT, padx=4)
+
+    btn_commit = tk.Button(frm, text="Manual Commit", command=on_commit)
+    btn_commit.pack(side=tk.LEFT, padx=4)
 
     lbl_path = tk.Label(root, text="No folder selected", wraplength=550, fg="gray")
     lbl_path.pack(pady=10)
