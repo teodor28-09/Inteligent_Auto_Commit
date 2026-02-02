@@ -17,6 +17,14 @@ def on_git_select():
     if repo_path:
         lbl_path.config(text=repo_path)
 
+        git = AutoCommit(repo_path)
+        branches = git.get_branches()
+
+        branch_combo["values"] = branches
+        if branches:
+            branch_combo.current(0)
+
+
 def auto_check():
     global after_id
     if not repo_path:
@@ -39,6 +47,13 @@ def on_button_toggle():
 
     if not flag:#start
         flag = True
+        git = AutoCommit(repo_path)
+
+        if use_branch_var.get():
+            branch = branch_var.get()
+            git.checkout(branch)
+
+        sync = git.sync()
         btn_start.config(text="Stop Tracking")
         lbl_status.config(text="Status: Tracking", fg="green")
         auto_check()
@@ -67,8 +82,14 @@ if __name__ == '__main__':
     root.title("Git")
     root.geometry("600x500")
 
+    # Global variable GUI
+    branch_var = tk.StringVar()
+    use_branch_var = tk.BooleanVar()
+
     frm = ttk.Frame(root)
     frm.pack(fill=tk.X, padx=6, pady=6)
+    frm1 = ttk.Frame(root)
+    frm1.pack(fill=tk.X, padx=6, pady=6)
 
     #entry = tk.Entry(root)
     #entry.pack(padx=10, pady=10)
@@ -76,18 +97,26 @@ if __name__ == '__main__':
     btn_get = tk.Button(frm, text="Select Git Folder",command = on_git_select)
     btn_get.pack(side=tk.LEFT, padx=4)
 
+    lbl_branch = tk.Label(frm1, text="Branch:")
+    lbl_branch.pack(side=tk.LEFT, padx=4)
+
+    branch_combo = ttk.Combobox(frm1, textvariable=branch_var, state="readonly", width=25)
+    branch_combo.pack(side=tk.LEFT, padx=4)
+
+    chk_branch = tk.Checkbutton(frm1,text="Use selected branch",variable=use_branch_var)
+    chk_branch.pack(side=tk.LEFT, padx=6)
+
     btn_start = tk.Button(frm, text="Start Tracking", command=on_button_toggle)
     btn_start.pack(side=tk.LEFT, padx=4)
 
-    btn_commit = tk.Button(frm, text="Manual Commit", command=on_commit)
+    btn_commit = tk.Button(root, text="Manual Commit", command=on_commit)
     btn_commit.pack(side=tk.LEFT, padx=4)
 
-    lbl_path = tk.Label(root, text="No folder selected", wraplength=550, fg="gray")
+    lbl_path = tk.Label(frm, text="No folder selected", wraplength=550, fg="gray")
     lbl_path.pack(pady=10)
 
-    lbl_status = tk.Label(root, text="Status: Stopped", fg="red")
+    lbl_status = tk.Label(frm, text="Status: Stopped", fg="red")
     lbl_status.pack(pady=5)
-
 
 
     root.mainloop()

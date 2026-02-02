@@ -5,6 +5,23 @@ class AutoCommit:
     def __init__(self,repo):
         self.repo = repo
 
+    def get_branches(self):
+        self.git(["fetch"])
+        branches = []
+
+        res = self.git(["branch","-a"]).stdout
+        for line in res.splitlines():
+            line = line.strip()
+            if line.startswith("remotes/origin/"):
+                branch = line.split("/")[2]
+                if "HEAD" not in branch:
+                    branches.append(branch)
+        return sorted(branches)
+
+
+    def checkout(self,branch):
+        return self.git(["checkout", branch])
+
     def git(self,cmd):
         return subprocess.run(
             ["git"] + cmd,
@@ -34,7 +51,8 @@ class AutoCommit:
             print("Up to date")
             return False
 
-
+    def sync(self):
+        print(self.git(["pull"]))
 
 def notify(title, message):
     subprocess.run(["notify-send", title, message])
