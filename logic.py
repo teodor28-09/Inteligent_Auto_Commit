@@ -51,6 +51,23 @@ class AutoCommit:
             print("Up to date")
             return False
 
+    def manual_commit(self,message):
+        if self.is_modified():
+            print(self.git(["add", "."]).stdout)
+            commit = self.git(["commit", "-m", message])
+            push = self.git(["push"])
+
+            print(commit.stdout)
+            print(push.stdout)
+
+            if commit.returncode != 0 or push.returncode != 0:
+                raise RuntimeError("Git commit or push failed")
+            print("Auto Commit")
+            return True
+        else:
+            print("Up to date")
+            return False
+
     def sync(self):
         print(self.git(["pull"]))
 

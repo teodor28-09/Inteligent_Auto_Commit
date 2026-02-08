@@ -69,9 +69,14 @@ def on_button_toggle():
 def on_commit():
     if not repo_path:
         return
+    message = entry.get()
+
+    if not message:
+        messagebox.showerror("Error", "No commit message entered")
+        return
 
     git = AutoCommit(repo_path)
-    committed = git.auto_commit()
+    committed = git.manual_commit(message)
 
     if committed:
         notify("Git Manual Commit", "Changes committed successfully")
@@ -88,11 +93,13 @@ if __name__ == '__main__':
 
     frm = ttk.Frame(root)
     frm.pack(fill=tk.X, padx=6, pady=6)
+
     frm1 = ttk.Frame(root)
     frm1.pack(fill=tk.X, padx=6, pady=6)
 
-    #entry = tk.Entry(root)
-    #entry.pack(padx=10, pady=10)
+    frm2 = ttk.Frame(root)
+    frm2.pack(fill=tk.X, padx=6, pady=6)
+
 
     btn_get = tk.Button(frm, text="Select Git Folder",command = on_git_select)
     btn_get.pack(side=tk.LEFT, padx=4)
@@ -109,7 +116,14 @@ if __name__ == '__main__':
     btn_start = tk.Button(frm, text="Start Tracking", command=on_button_toggle)
     btn_start.pack(side=tk.LEFT, padx=4)
 
-    btn_commit = tk.Button(root, text="Manual Commit", command=on_commit)
+
+    lbl_commit = tk.Label(frm2, text="Commit Message:")
+    lbl_commit.pack(side=tk.LEFT, padx=4)
+
+    entry = tk.Entry(frm2)
+    entry.pack(side = tk.LEFT, padx=4)
+
+    btn_commit = tk.Button(frm2, text="Manual Commit", command=on_commit)
     btn_commit.pack(side=tk.LEFT, padx=4)
 
     lbl_path = tk.Label(frm, text="No folder selected", wraplength=550, fg="gray")
